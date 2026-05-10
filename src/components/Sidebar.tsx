@@ -1,4 +1,6 @@
 import { Clock } from './Clock'
+import { SubscribeForm } from './SubscribeForm'
+import { FilterButtons } from './FilterButtons'
 
 type Maybe<T> = T | null | undefined
 
@@ -14,6 +16,8 @@ type ProfileData = {
   socials?: Maybe<{ label?: Maybe<string>; href?: Maybe<string>; id?: Maybe<string> }[]>
 }
 
+type Filter = { label: string; value: string }
+
 const Card = ({
   children,
   className = '',
@@ -24,7 +28,15 @@ const Card = ({
   <div className={`bg-card rounded-card p-6 md:p-7 ${className}`}>{children}</div>
 )
 
-export function Sidebar({ profile }: { profile: ProfileData }) {
+export function Sidebar({
+  profile,
+  activeFilter,
+  filters,
+}: {
+  profile: ProfileData
+  activeFilter?: string | null
+  filters?: Filter[]
+}) {
   const name = profile.name ?? 'Your Name'
   const role = profile.role ?? undefined
   const bio = profile.bio ?? undefined
@@ -34,6 +46,7 @@ export function Sidebar({ profile }: { profile: ProfileData }) {
   const awards = profile.awards ?? []
   const services = profile.services ?? []
   const socials = profile.socials ?? []
+  const filterList = filters ?? []
 
   return (
     <aside className="flex flex-col gap-3 md:gap-4">
@@ -41,7 +54,7 @@ export function Sidebar({ profile }: { profile: ProfileData }) {
         <h1 className="text-4xl md:text-5xl font-medium tracking-tight">{name}</h1>
       </Card>
 
-      {(role || bio || cta?.label) && (
+      {(role || bio || cta?.label || filterList.length > 0) && (
         <Card>
           {(role || bio) && (
             <p className="text-base md:text-[15px] leading-relaxed text-ink/90">
@@ -50,19 +63,29 @@ export function Sidebar({ profile }: { profile: ProfileData }) {
               {bio}
             </p>
           )}
-          {cta?.label && cta?.href && (
-            <a
-              href={cta.href}
-              className="inline-flex mt-6 items-center px-5 py-2 rounded-full border border-line hover:bg-bg transition-colors text-sm"
-            >
-              {cta.label}
-            </a>
-          )}
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {cta?.label && cta?.href && (
+              <a
+                href={cta.href}
+                className="inline-flex items-center px-5 py-2 rounded-full border border-line hover:bg-bg transition-colors text-sm"
+              >
+                {cta.label}
+              </a>
+            )}
+            {filterList.length > 0 && (
+              <FilterButtons filters={filterList} activeFilter={activeFilter ?? null} />
+            )}
+          </div>
         </Card>
       )}
 
       <Card>
         <Clock timezone={timezone} location={location} />
+      </Card>
+
+      <Card>
+        <SubscribeForm />
       </Card>
 
       {(awards.length > 0 || services.length > 0 || socials.length > 0) && (

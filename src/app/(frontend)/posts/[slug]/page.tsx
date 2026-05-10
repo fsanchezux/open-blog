@@ -37,11 +37,20 @@ export default async function PostPage({
   const { slug } = await params
   const payload = await getPayload({ config })
 
+  const nowIso = new Date().toISOString()
   const res = await payload.find({
     collection: 'posts',
     where: {
-      slug: { equals: slug },
-      _status: { equals: 'published' },
+      and: [
+        { slug: { equals: slug } },
+        { _status: { equals: 'published' } },
+        {
+          or: [
+            { publishedAt: { less_than_equal: nowIso } },
+            { publishedAt: { exists: false } },
+          ],
+        },
+      ],
     },
     depth: 2,
     limit: 1,

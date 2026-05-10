@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     posts: Post;
+    subscribers: Subscriber;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -211,7 +213,18 @@ export interface Post {
    * Cover image shown in the grid
    */
   cover: number | Media;
+  /**
+   * Used by the sidebar filter buttons
+   */
+  category?: ('lettering-curator' | 'dont-judge-a-book-by-its-cover' | 'music-curator') | null;
+  /**
+   * Set a future date to schedule the post — it will only be visible to readers after that moment.
+   */
   publishedAt?: string | null;
+  /**
+   * Internal — flips to true once subscribers have been emailed.
+   */
+  notificationSent?: boolean | null;
   tags?:
     | {
         tag?: string | null;
@@ -243,6 +256,24 @@ export interface Post {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers".
+ */
+export interface Subscriber {
+  id: number;
+  email: string;
+  /**
+   * Toggle off to stop sending notifications to this address.
+   */
+  confirmed?: boolean | null;
+  /**
+   * Where the subscription came from (e.g. "homepage").
+   */
+  source?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -279,6 +310,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'posts';
         value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'subscribers';
+        value: number | Subscriber;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -407,7 +442,9 @@ export interface PostsSelect<T extends boolean = true> {
   subtitle?: T;
   slug?: T;
   cover?: T;
+  category?: T;
   publishedAt?: T;
+  notificationSent?: T;
   tags?:
     | T
     | {
@@ -425,6 +462,17 @@ export interface PostsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  confirmed?: T;
+  source?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

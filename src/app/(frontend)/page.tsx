@@ -3,11 +3,36 @@ import config from '@payload-config'
 
 import { Sidebar } from '@/components/Sidebar'
 import { PostsGrid } from '@/components/PostsGrid'
+import { POST_CATEGORIES } from '@/collections/Posts'
 
 export const dynamic = 'force-dynamic'
 
-export default async function HomePage() {
+const VALID_FILTERS = new Set(POST_CATEGORIES.map((c) => c.value))
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ filter?: string }>
+}) {
+  const { filter } = await searchParams
+  const activeFilter = filter && VALID_FILTERS.has(filter as any) ? filter : null
   const payload = await getPayload({ config })
+
+  const nowIso = new Date().toISOString()
+  const where: any = {
+    and: [
+      { _status: { equals: 'published' } },
+      {
+        or: [
+          { publishedAt: { less_than_equal: nowIso } },
+          { publishedAt: { exists: false } },
+        ],
+      },
+    ],
+  }
+  if (activeFilter) {
+    where.and.push({ category: { equals: activeFilter } })
+  }
 
   const [profile, postsRes] = await Promise.all([
     payload.findGlobal({ slug: 'profile' }).catch(() => null),
@@ -16,7 +41,7 @@ export default async function HomePage() {
       sort: '-publishedAt',
       depth: 1,
       limit: 50,
-      where: { _status: { equals: 'published' } },
+      where,
     }),
   ])
 
@@ -40,7 +65,11 @@ export default async function HomePage() {
   return (
     <main className="mx-auto max-w-[1600px] px-3 md:px-4 py-3 md:py-4">
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] gap-3 md:gap-4">
-        <Sidebar profile={profile || {}} />
+        <Sidebar
+          profile={profile || {}}
+          activeFilter={activeFilter}
+          filters={POST_CATEGORIES.map((c) => ({ label: c.label, value: c.value }))}
+        />
         <section>
           <PostsGrid posts={posts} />
         </section>

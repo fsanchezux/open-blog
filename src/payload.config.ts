@@ -10,6 +10,7 @@ import { cloudinaryAdapter } from './lib/cloudinary-adapter'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
+import { Subscribers } from './collections/Subscribers'
 import { Profile } from './collections/Profile'
 
 const filename = fileURLToPath(import.meta.url)
@@ -25,7 +26,7 @@ export default buildConfig({
       titleSuffix: '— Blog admin',
     },
   },
-  collections: [Users, Media, Posts],
+  collections: [Users, Media, Posts, Subscribers],
   globals: [Profile],
   editor: lexicalEditor(),
   sharp,
@@ -37,6 +38,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
     },
+    push: true,
   }),
   upload: {
     limits: {
