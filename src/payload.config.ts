@@ -37,6 +37,11 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
+  upload: {
+    limits: {
+      fileSize: 50 * 1024 * 1024, // 50 MB
+    },
+  },
   plugins: [
     vercelBlobStorage({
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
@@ -44,6 +49,7 @@ export default buildConfig({
         media: true,
       },
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
+      clientUploads: true,
     }),
   ],
 })
