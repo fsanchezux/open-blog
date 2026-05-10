@@ -1,15 +1,17 @@
 import { Clock } from './Clock'
 
+type Maybe<T> = T | null | undefined
+
 type ProfileData = {
-  name?: string
-  role?: string
-  bio?: string
-  location?: string
-  timezone?: string
-  cta?: { label?: string; href?: string }
-  awards?: { label: string }[]
-  services?: { label: string }[]
-  socials?: { label: string; href: string }[]
+  name?: Maybe<string>
+  role?: Maybe<string>
+  bio?: Maybe<string>
+  location?: Maybe<string>
+  timezone?: Maybe<string>
+  cta?: Maybe<{ label?: Maybe<string>; href?: Maybe<string> }>
+  awards?: Maybe<{ label?: Maybe<string>; id?: Maybe<string> }[]>
+  services?: Maybe<{ label?: Maybe<string>; id?: Maybe<string> }[]>
+  socials?: Maybe<{ label?: Maybe<string>; href?: Maybe<string>; id?: Maybe<string> }[]>
 }
 
 const Card = ({
@@ -23,17 +25,15 @@ const Card = ({
 )
 
 export function Sidebar({ profile }: { profile: ProfileData }) {
-  const {
-    name = 'Your Name',
-    role,
-    bio,
-    location,
-    timezone = 'Europe/Madrid',
-    cta,
-    awards = [],
-    services = [],
-    socials = [],
-  } = profile
+  const name = profile.name ?? 'Your Name'
+  const role = profile.role ?? undefined
+  const bio = profile.bio ?? undefined
+  const location = profile.location ?? undefined
+  const timezone = profile.timezone ?? 'Europe/Madrid'
+  const cta = profile.cta ?? undefined
+  const awards = profile.awards ?? []
+  const services = profile.services ?? []
+  const socials = profile.socials ?? []
 
   return (
     <aside className="flex flex-col gap-3 md:gap-4">
@@ -74,7 +74,7 @@ export function Sidebar({ profile }: { profile: ProfileData }) {
                   <div className="text-ink mb-3">Awards</div>
                   <ul className="space-y-1.5 text-muted">
                     {awards.map((a, i) => (
-                      <li key={i}>{a.label}</li>
+                      <li key={a.id ?? i}>{a.label}</li>
                     ))}
                   </ul>
                 </>
@@ -86,7 +86,7 @@ export function Sidebar({ profile }: { profile: ProfileData }) {
                   <div className="text-ink mb-3">Services</div>
                   <ul className="space-y-1.5 text-muted">
                     {services.map((s, i) => (
-                      <li key={i}>{s.label}</li>
+                      <li key={s.id ?? i}>{s.label}</li>
                     ))}
                   </ul>
                 </>
@@ -98,9 +98,9 @@ export function Sidebar({ profile }: { profile: ProfileData }) {
                   <div className="text-ink mb-3">Socials</div>
                   <ul className="space-y-1.5 text-muted">
                     {socials.map((s, i) => (
-                      <li key={i}>
+                      <li key={s.id ?? i}>
                         <a
-                          href={s.href}
+                          href={s.href ?? '#'}
                           target="_blank"
                           rel="noreferrer"
                           className="hover:text-ink transition-colors"

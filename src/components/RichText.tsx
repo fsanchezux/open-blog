@@ -27,14 +27,14 @@ function Fragment({ node }: { node: Node }) {
     case 'paragraph':
       return <p>{renderChildren(node.children)}</p>
     case 'heading': {
-      const Tag = (node.tag || 'h2') as keyof JSX.IntrinsicElements
-      return <Tag>{renderChildren(node.children)}</Tag>
+      const tag = (node.tag || 'h2') as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+      return React.createElement(tag, null, renderChildren(node.children))
     }
     case 'quote':
       return <blockquote>{renderChildren(node.children)}</blockquote>
     case 'list': {
-      const Tag = node.tag || (node.listType === 'number' ? 'ol' : 'ul')
-      return <Tag>{renderChildren(node.children)}</Tag>
+      const tag = (node.tag || (node.listType === 'number' ? 'ol' : 'ul')) as 'ol' | 'ul'
+      return React.createElement(tag, null, renderChildren(node.children))
     }
     case 'listitem':
       return <li>{renderChildren(node.children)}</li>
