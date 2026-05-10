@@ -1,3 +1,5 @@
+import path from 'path'
+import os from 'os'
 import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
@@ -17,6 +19,7 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    staticDir: path.join(os.tmpdir(), 'payload-media'),
     mimeTypes: ['image/*'],
     imageSizes: [
       {
