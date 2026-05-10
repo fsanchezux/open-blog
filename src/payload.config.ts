@@ -1,11 +1,12 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { cloudStoragePlugin } from '@payloadcms/plugin-cloud-storage'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { cloudinaryAdapter } from './lib/cloudinary-adapter'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
@@ -43,12 +44,22 @@ export default buildConfig({
     },
   },
   plugins: [
-    vercelBlobStorage({
-      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+    cloudStoragePlugin({
+      enabled: Boolean(
+        process.env.CLOUDINARY_CLOUD_NAME &&
+          process.env.CLOUDINARY_API_KEY &&
+          process.env.CLOUDINARY_API_SECRET,
+      ),
       collections: {
-        media: true,
+        media: {
+          adapter: cloudinaryAdapter({
+            cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+            apiKey: process.env.CLOUDINARY_API_KEY || '',
+            apiSecret: process.env.CLOUDINARY_API_SECRET || '',
+            folder: 'open-blog/media',
+          }) as any,
+        },
       },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
   ],
 })
