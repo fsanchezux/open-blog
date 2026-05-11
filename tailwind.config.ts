@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        delight: ['var(--font-delight)', 'system-ui', 'sans-serif'],
       },
       colors: {
         bg: '#f2f2f0',

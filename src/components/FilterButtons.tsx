@@ -12,7 +12,19 @@ export function FilterButtons({
   activeFilter: string | null
 }) {
   return (
-    <>
+    <div className="flex flex-wrap gap-2">
+      <Link
+        href="/"
+        scroll={false}
+        aria-pressed={activeFilter === null}
+        className={`inline-flex items-center px-5 py-2 rounded-full border text-sm transition-colors ${
+          activeFilter === null
+            ? 'bg-ink text-bg border-ink'
+            : 'border-line hover:bg-bg'
+        }`}
+      >
+        Home
+      </Link>
       {filters.map((f) => {
         const isActive = activeFilter === f.value
         const href = isActive ? '/' : `/?filter=${encodeURIComponent(f.value)}`
@@ -32,6 +44,6 @@ export function FilterButtons({
           </Link>
         )
       })}
-    </>
+    </div>
   )
 }
