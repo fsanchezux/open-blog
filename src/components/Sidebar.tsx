@@ -44,7 +44,11 @@ export function Sidebar({
   return (
     <aside className="flex flex-col gap-3 md:gap-4">
       <Card>
-        <h1 className="text-4xl md:text-5xl font-delight font-bold tracking-tight whitespace-pre-line">{name}</h1>
+        <h1 className="text-4xl md:text-5xl font-delight font-bold tracking-tight">
+          {name === 'This is not a blog' ? (
+            <>This is not<br />a blog</>
+          ) : name}
+        </h1>
       </Card>
 
       {(role || bio || filterList.length > 0) && (
