@@ -3,6 +3,7 @@ import config from '@payload-config'
 
 import { Sidebar } from '@/components/Sidebar'
 import { PostsGrid } from '@/components/PostsGrid'
+import { Footer } from '@/components/Footer'
 import { POST_CATEGORIES } from '@/collections/Posts'
 
 export const dynamic = 'force-dynamic'
@@ -63,8 +64,8 @@ export default async function HomePage({
   }))
 
   return (
-    <main className="mx-auto max-w-[1600px] px-3 md:px-4 py-3 md:py-4">
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] gap-3 md:gap-4">
+    <main className="mx-auto max-w-[1600px] px-3 md:px-4 py-3 md:py-4 min-h-screen flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] gap-3 md:gap-4 flex-grow">
         <Sidebar
           profile={profile || {}}
           activeFilter={activeFilter}
@@ -74,6 +75,7 @@ export default async function HomePage({
           <PostsGrid posts={posts} />
         </section>
       </div>
+      <Footer profile={profile || {}} />
     </main>
   )
 }
