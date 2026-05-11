@@ -44,7 +44,7 @@ export function Sidebar({
   const filterList = filters ?? []
 
   return (
-    <aside className="flex flex-col gap-3 md:gap-4 pb-24 md:pb-0">
+    <aside className="flex flex-col gap-3 md:gap-4">
       <Card>
         <h1 className="text-4xl md:text-5xl font-delight font-bold tracking-tight">
           {name === 'This is not a blog' ? (
@@ -71,7 +71,7 @@ export function Sidebar({
       )}
 
       {filterList.length > 0 && (
-        <div className="md:hidden">
+        <div className="md:hidden flex justify-center">
           <FilterButtons filters={filterList} activeFilter={activeFilter ?? null} />
         </div>
       )}
