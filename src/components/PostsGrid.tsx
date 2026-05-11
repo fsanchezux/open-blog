@@ -47,11 +47,7 @@ export function PostsGrid({ posts }: { posts: PostCard[] }) {
   }, [posts.length])
 
   if (!posts.length) {
-    return (
-      <div className="bg-card rounded-card p-10 text-muted">
-        No posts yet. Open <code className="text-ink">/admin</code> and publish your first one.
-      </div>
-    )
+    return null
   }
 
   return (
