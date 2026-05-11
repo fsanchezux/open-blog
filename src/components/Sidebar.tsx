@@ -1,4 +1,3 @@
-import { Clock } from './Clock'
 import { SubscribeForm } from './SubscribeForm'
 import { FilterButtons } from './FilterButtons'
 
@@ -8,9 +7,6 @@ type ProfileData = {
   name?: Maybe<string>
   role?: Maybe<string>
   bio?: Maybe<string>
-  location?: Maybe<string>
-  timezone?: Maybe<string>
-  cta?: Maybe<{ label?: Maybe<string>; href?: Maybe<string> }>
   awards?: Maybe<{ label?: Maybe<string>; id?: Maybe<string> }[]>
   services?: Maybe<{ label?: Maybe<string>; id?: Maybe<string> }[]>
   socials?: Maybe<{ label?: Maybe<string>; href?: Maybe<string>; id?: Maybe<string> }[]>
@@ -40,9 +36,6 @@ export function Sidebar({
   const name = profile.name ?? 'Your Name'
   const role = profile.role ?? undefined
   const bio = profile.bio ?? undefined
-  const location = profile.location ?? undefined
-  const timezone = profile.timezone ?? 'Europe/Madrid'
-  const cta = profile.cta ?? undefined
   const awards = profile.awards ?? []
   const services = profile.services ?? []
   const socials = profile.socials ?? []
@@ -54,7 +47,7 @@ export function Sidebar({
         <h1 className="text-4xl md:text-5xl font-medium tracking-tight">{name}</h1>
       </Card>
 
-      {(role || bio || cta?.label || filterList.length > 0) && (
+      {(role || bio || filterList.length > 0) && (
         <Card>
           {(role || bio) && (
             <p className="text-base md:text-[15px] leading-relaxed text-ink/90">
@@ -64,25 +57,14 @@ export function Sidebar({
             </p>
           )}
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {cta?.label && cta?.href && (
-              <a
-                href={cta.href}
-                className="inline-flex items-center px-5 py-2 rounded-full border border-line hover:bg-bg transition-colors text-sm"
-              >
-                {cta.label}
-              </a>
-            )}
-            {filterList.length > 0 && (
+          {filterList.length > 0 && (
+            <div className="mt-6">
+              <div className="text-sm text-muted mb-2">Secciones:</div>
               <FilterButtons filters={filterList} activeFilter={activeFilter ?? null} />
-            )}
-          </div>
+            </div>
+          )}
         </Card>
       )}
-
-      <Card>
-        <Clock timezone={timezone} location={location} />
-      </Card>
 
       <Card>
         <SubscribeForm />
