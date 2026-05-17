@@ -90,38 +90,39 @@ export default async function PostPage({
         </Link>
       </div>
 
-      <article className="bg-card rounded-card p-6 md:p-10">
-        <header className="mb-8">
-          <h1 className="text-3xl md:text-5xl font-medium tracking-tight">{post.title}</h1>
-          {post.subtitle && (
-            <p className="mt-3 text-lg md:text-xl text-muted">{post.subtitle}</p>
-          )}
-          {post.publishedAt && (
-            <p className="mt-4 text-sm text-muted">
-              {new Date(post.publishedAt).toLocaleDateString(undefined, {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
-          )}
-        </header>
-
+      <article className="bg-card rounded-card overflow-hidden">
         {coverUrl && (
-          <div className="rounded-card overflow-hidden mb-8">
+          <div className="relative w-full aspect-[16/7] md:aspect-[16/6] bg-black">
             <Image
               src={coverUrl}
               alt={cover?.alt || post.title}
-              width={coverW}
-              height={coverH}
-              className="w-full h-auto"
+              fill
+              className="object-cover"
               priority
               sizes="(max-width: 1024px) 100vw, 1100px"
             />
           </div>
         )}
 
-        {post.content && <RichText data={post.content} />}
+        <div className="p-6 md:p-10">
+          <header className="mb-8">
+            <h1 className="text-3xl md:text-5xl font-medium tracking-tight">{post.title}</h1>
+            {post.subtitle && (
+              <p className="mt-3 text-lg md:text-xl text-muted">{post.subtitle}</p>
+            )}
+            {post.publishedAt && (
+              <p className="mt-4 text-sm text-muted">
+                {new Date(post.publishedAt).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            )}
+          </header>
+
+          {post.content && <RichText data={post.content} />}
+        </div>
       </article>
 
       <PostGallery items={gallery} />

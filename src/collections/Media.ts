@@ -6,9 +6,21 @@ const CLOUDINARY_FOLDER = 'open-blog/media'
 
 const stripExt = (filename: string) => filename.replace(/\.[^/.]+$/, '')
 
+let warnedMissingEnv = false
+
 const cloudinaryUrl = (filename: string): string | null => {
   const cloud = process.env.CLOUDINARY_CLOUD_NAME
-  if (!cloud) return null
+  if (!cloud) {
+    if (!warnedMissingEnv) {
+      warnedMissingEnv = true
+      console.warn(
+        '[media] CLOUDINARY_CLOUD_NAME is not set — media URLs will fall back to /api/media/file/* ' +
+          'and images will appear broken in production. Check that .env is loaded from the cwd ' +
+          'where the dev server runs.',
+      )
+    }
+    return null
+  }
   const publicId = `${CLOUDINARY_FOLDER}/${stripExt(filename)}`
   const encoded = publicId.split('/').map(encodeURIComponent).join('/')
   return `https://res.cloudinary.com/${cloud}/image/upload/f_auto,q_auto/${encoded}`
