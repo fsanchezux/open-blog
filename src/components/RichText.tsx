@@ -16,9 +16,11 @@ function Fragment({ node }: { node: Node }) {
     if (typeof format === 'number') {
       if (format & 1) text = <strong>{text}</strong>
       if (format & 2) text = <em>{text}</em>
+      if (format & 4) text = <s>{text}</s>
       if (format & 8) text = <u>{text}</u>
       if (format & 16) text = <code>{text}</code>
-      if (format & 32) text = <s>{text}</s>
+      if (format & 32) text = <sub>{text}</sub>
+      if (format & 64) text = <sup>{text}</sup>
     }
     return <>{text}</>
   }
