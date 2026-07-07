@@ -25,19 +25,25 @@ export async function sendEmail(opts: {
     return { ok: false, error: 'RESEND_API_KEY not configured' }
   }
 
-  const res = await fetch(RESEND_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from,
-      to: Array.isArray(opts.to) ? opts.to : [opts.to],
-      subject: opts.subject,
-      html: opts.html,
-    }),
-  })
+  let res: Response
+  try {
+    res = await fetch(RESEND_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: Array.isArray(opts.to) ? opts.to : [opts.to],
+        subject: opts.subject,
+        html: opts.html,
+      }),
+      signal: AbortSignal.timeout(10_000),
+    })
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
 
   if (!res.ok) {
     const text = await res.text().catch(() => '')

@@ -57,10 +57,12 @@ export const Posts: CollectionConfig = {
           if (isScheduled) return
 
           if (operation === 'create' || !wasPublished || !previousDoc) {
-            await notifySubscribersOfPost(req.payload, doc)
+            void notifySubscribersOfPost(req.payload, doc).catch((err) =>
+              req.payload.logger.error({ err }, 'Failed to notify subscribers'),
+            )
           }
         } catch (err) {
-          req.payload.logger.error({ err }, 'Failed to notify subscribers')
+          req.payload.logger.error({ err }, 'Failed to schedule subscriber notification')
         }
       },
     ],
